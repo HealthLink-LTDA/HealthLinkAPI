@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  Mobile_postgres_local:
+    image: postgres:13
+    container_name: mobile-banco
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123@banco
+      POSTGRES_DB: mobile
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
