@@ -1,9 +1,12 @@
 import { Usuario } from 'src/usuario/usuario.entity';
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+
 
 @Entity('funcionario')
-export class Funcionario extends Usuario {
-    @PrimaryColumn('uuid')
+export class Funcionario extends Usuario{
+    @PrimaryColumn('uuid') 
+    @OneToOne(() => Usuario, { cascade: true, eager: true }) 
+    @JoinColumn({ name: 'id' }) 
     id: string;
 
     @Column({ unique: true })
@@ -12,11 +15,12 @@ export class Funcionario extends Usuario {
     @Column({ default: true })
     ativo: boolean;
 
-    @Column({ default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
     criadoAt: Date;
 
-    @Column()
+    @UpdateDateColumn()
     modificadoAt: Date;
+
 
     @Column({ default: false })
     deletado: boolean;
