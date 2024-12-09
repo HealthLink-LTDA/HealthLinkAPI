@@ -1,7 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, TableInheritance } from 'typeorm';
+import { Medico } from 'src/medico/medico.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity('usuario')
-@TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export abstract class Usuario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -26,4 +33,7 @@ export abstract class Usuario {
 
   @Column({ default: false })
   deletado: boolean;
+
+  @OneToMany(() => Medico, (medico) => medico.usuario)
+  medicos: Medico[];
 }

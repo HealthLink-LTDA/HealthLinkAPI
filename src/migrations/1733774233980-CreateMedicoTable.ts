@@ -24,8 +24,6 @@ export class CreateMedicoTable1733774233980 implements MigrationInterface {
         
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable('medico');
-    
-        await queryRunner.dropTable('usuario', true);
     }
 
 }
