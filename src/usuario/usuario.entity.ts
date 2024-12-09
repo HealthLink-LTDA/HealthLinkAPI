@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, TableInheritance } from 'typeorm';
 
 @Entity('usuario')
+@TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export abstract class Usuario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
