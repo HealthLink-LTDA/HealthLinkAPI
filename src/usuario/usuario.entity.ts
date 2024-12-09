@@ -1,7 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Medico } from 'src/medico/medico.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity('usuario')
-export class Usuario {
+export abstract class Usuario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -13,4 +21,19 @@ export class Usuario {
 
   @Column()
   senha: string;
+
+  @Column({ default: true })
+  ativo: boolean;
+
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
+  criadoAt: Date;
+
+  @UpdateDateColumn()
+  modificadoAt: Date;
+
+  @Column({ default: false })
+  deletado: boolean;
+
+  @OneToMany(() => Medico, (medico) => medico.usuario)
+  medicos: Medico[];
 }
