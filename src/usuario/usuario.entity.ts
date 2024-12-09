@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('usuario')
 export abstract class Usuario {
@@ -13,4 +13,16 @@ export abstract class Usuario {
 
   @Column()
   senha: string;
+
+  @Column({ default: true })
+  ativo: boolean;
+
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
+  criadoAt: Date;
+
+  @UpdateDateColumn()
+  modificadoAt: Date;
+
+  @Column({ default: false })
+  deletado: boolean;
 }
