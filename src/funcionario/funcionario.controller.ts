@@ -12,46 +12,45 @@ export class FuncionarioController {
     return this.funcionarioService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)  
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(
-    @Body() nome: string,
-            email: string,
-            senha: string,
-            crm: string,
-            cargoId: number
+    @Body('nome') nome: string,
+    @Body('email') email: string,
+    @Body('senha') senha: string,
+    @Body('crm') crm: string,
+    @Body('cargoId') cargoId: number,
   ) {
     return this.funcionarioService.create(nome, email, senha, crm, cargoId);
   }
 
-  @UseGuards(JwtAuthGuard)  
-  @Get()
-  getById( @Param() id: string ) {
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  getById(@Param('id') id: string) {
     return this.funcionarioService.findOneById(id);
   }
 
-  @UseGuards(JwtAuthGuard)  
-  @Get()
-  getByEmail( @Param() email: string ) {
+  @UseGuards(JwtAuthGuard)
+  @Get('email/:email')
+  getByEmail(@Param('email') email: string) {
     return this.funcionarioService.findByEmail(email);
   }
 
-  @UseGuards(JwtAuthGuard)  
-  @Delete()
-  delete( @Param() id: string ) {
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  delete(@Param('id') id: string) {
     return this.funcionarioService.remove(id);
   }
 
-  @UseGuards(JwtAuthGuard)  
-  @Put()
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
   update(
-    @Body() id: string,
-            nome: string,
-            email: string,
-            crm: string,
-            cargoId: number
+    @Param('id') id: string,
+    @Body('nome') nome: string,
+    @Body('email') email: string,
+    @Body('crm') crm: string,
+    @Body('cargoId') cargoId: number,
   ) {
     return this.funcionarioService.update(id, nome, email, crm, cargoId);
   }
-
 }
