@@ -1,25 +1,25 @@
-import { Medico } from 'src/medico/medico.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  IntegerType,
+  JoinColumn,
 } from 'typeorm';
 
-@Entity('usuario')
-export abstract class Usuario {
+@Entity('funcionario')
+export class Funcionario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, nullable: false })
   nome: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column()
+  @Column({ nullable: false })
   senha: string;
 
   @Column({ default: true })
@@ -34,6 +34,9 @@ export abstract class Usuario {
   @Column({ default: false })
   deletado: boolean;
 
-  @OneToMany(() => Medico, (medico) => medico.usuario)
-  medicos: Medico[];
+  @Column({ unique: true })
+  crm: string;
+
+  @Column({ type: "integer", nullable: true })
+  cargoId: number;
 }

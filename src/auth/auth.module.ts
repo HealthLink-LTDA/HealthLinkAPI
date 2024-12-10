@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { UsuarioModule } from '../usuario/usuario.module';
+import { FuncionarioModule } from '../funcionario/funcionario.module';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
@@ -16,7 +16,7 @@ import { ConfigService } from '@nestjs/config';
         signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN') },
       }),
     }),
-    UsuarioModule,
+    FuncionarioModule,
   ],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
