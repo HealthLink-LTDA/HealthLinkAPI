@@ -39,7 +39,7 @@ export class PacienteController {
   @UseGuards(JwtAuthGuard)  
   @Put()
   update(
-    @Body('id') id: string,
+    @Param('id') id: string,
     @Body('nome') nome: string,
     @Body('cpf') cpf: string,
     @Body('nomeResponsavel') nomeResponsavel: string,
