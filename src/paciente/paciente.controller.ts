@@ -6,7 +6,7 @@ import { PacienteService } from './paciente.service';
 export class PacienteController {
   constructor(private readonly pacienteService: PacienteService) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.pacienteService.findAll();
@@ -15,36 +15,36 @@ export class PacienteController {
   @UseGuards(JwtAuthGuard)  
   @Post()
   create(
-    @Body() nome: string,
-            cpf: string,
-            nomeResponsavel: string,
-            dataNascimento: Date,
-            notas: string
+    @Body('nome') nome: string,
+    @Body('cpf') cpf: string,
+    @Body('nomeResponsavel') nomeResponsavel: string,
+    @Body('dataNascimento') dataNascimento: Date,
+    @Body('notas') notas: string,
   ) {
     return this.pacienteService.create(nome, cpf, nomeResponsavel, dataNascimento, notas);
   }
 
   @UseGuards(JwtAuthGuard)  
-  @Get()
-  getById( @Param() id: string ) {
+  @Get(':id')
+  getById(@Param('id') id: string) {
     return this.pacienteService.findOneById(id);
   }
 
   @UseGuards(JwtAuthGuard)  
-  @Delete()
-  delete( @Param() id: string ) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.pacienteService.remove(id);
   }
 
   @UseGuards(JwtAuthGuard)  
   @Put()
   update(
-    @Body() id: string,
-            nome: string,
-            cpf: string,
-            nomeResponsavel: string,
-            dataNascimento: Date,
-            notas: string
+    @Body('id') id: string,
+    @Body('nome') nome: string,
+    @Body('cpf') cpf: string,
+    @Body('nomeResponsavel') nomeResponsavel: string,
+    @Body('dataNascimento') dataNascimento: Date,
+    @Body('notas') notas: string,
   ) {
     return this.pacienteService.update(id, nome, cpf, nomeResponsavel, dataNascimento, notas);
   }
