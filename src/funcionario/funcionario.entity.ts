@@ -4,8 +4,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  IntegerType,
-  JoinColumn,
 } from 'typeorm';
 
 @Entity('funcionario')
@@ -37,6 +35,6 @@ export class Funcionario {
   @Column({ unique: true })
   crm: string;
 
-  @Column({ type: "integer", nullable: true })
+  @Column({ type: 'integer', nullable: true })
   cargoId: number;
 }

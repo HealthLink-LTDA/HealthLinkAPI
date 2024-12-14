@@ -19,5 +19,4 @@ export class Paciente {
 
   @Column()
   notas: string;
-
 }

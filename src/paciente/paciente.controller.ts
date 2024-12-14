@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PacienteService } from './paciente.service';
 
@@ -12,7 +21,7 @@ export class PacienteController {
     return this.pacienteService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)  
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(
     @Body('nome') nome: string,
@@ -21,22 +30,28 @@ export class PacienteController {
     @Body('dataNascimento') dataNascimento: Date,
     @Body('notas') notas: string,
   ) {
-    return this.pacienteService.create(nome, cpf, nomeResponsavel, dataNascimento, notas);
+    return this.pacienteService.create(
+      nome,
+      cpf,
+      nomeResponsavel,
+      dataNascimento,
+      notas,
+    );
   }
 
-  @UseGuards(JwtAuthGuard)  
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   getById(@Param('id') id: string) {
     return this.pacienteService.findOneById(id);
   }
 
-  @UseGuards(JwtAuthGuard)  
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.pacienteService.remove(id);
   }
 
-  @UseGuards(JwtAuthGuard)  
+  @UseGuards(JwtAuthGuard)
   @Put()
   update(
     @Param('id') id: string,
@@ -46,7 +61,13 @@ export class PacienteController {
     @Body('dataNascimento') dataNascimento: Date,
     @Body('notas') notas: string,
   ) {
-    return this.pacienteService.update(id, nome, cpf, nomeResponsavel, dataNascimento, notas);
+    return this.pacienteService.update(
+      id,
+      nome,
+      cpf,
+      nomeResponsavel,
+      dataNascimento,
+      notas,
+    );
   }
-
 }
