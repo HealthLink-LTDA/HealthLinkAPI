@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { PacienteModule } from './paciente/paciente.module';
 import { FuncionarioModule } from './funcionario/funcionario.module';
+import { DataSource } from 'typeorm';
+import { CargoModule } from './cargo/cargo.module';
 
 @Module({
   imports: [
@@ -24,6 +26,18 @@ import { FuncionarioModule } from './funcionario/funcionario.module';
     AuthModule,
     PacienteModule,
     FuncionarioModule,
+    CargoModule,
   ],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly dataSource: DataSource) {}
+
+  async onModuleInit() {
+    const roles = await this.dataSource.query(`SELECT nome FROM cargo`);
+    console.log(
+      'Available Roles:',
+      roles.map((r) => r.nome),
+    );
+  }
+}

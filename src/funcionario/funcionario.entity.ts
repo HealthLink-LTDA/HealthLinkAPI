@@ -1,9 +1,12 @@
+import { Cargo } from 'src/cargo/cargo.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('funcionario')
@@ -35,6 +38,7 @@ export class Funcionario {
   @Column({ unique: true })
   crm: string;
 
-  @Column({ type: 'integer', nullable: true })
-  cargoId: number;
+  @ManyToOne(() => Cargo)
+  @JoinColumn({ name: 'cargoId' })
+  cargo: Cargo;
 }
