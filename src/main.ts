@@ -7,16 +7,20 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  const allowedOrigins = configService.get<string>('CORS_ALLOWED_ORIGINS');
+
   app.enableCors({
     origin: (origin, callback) => {
-      const allowedOrigins = configService
-        .get<string>('CORS_ALLOWED_ORIGINS')
-        .split(',');
-
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (allowedOrigins === '*') {
         callback(null, true);
       } else {
-        callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+        const allowedOriginsArray = allowedOrigins.split(',');
+
+        if (!origin || allowedOriginsArray.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+        }
       }
     },
     allowedHeaders: configService.get<string>('CORS_ALLOWED_HEADERS'),
