@@ -1,9 +1,30 @@
-version: '3.8'
-
 services:
-  Mobile_postgres_local:
+  mobile_api:
+    build:
+      context: ..
+      dockerfile: DockerFile
+    container_name: healthlink-api
+    volumes:
+      - ../:/home/node/app
+      - /home/node/app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=mobile_database
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=123@banco
+      - DB_DATABASE=mobile
+      - JWT_SECRET=segredo_super_secreto
+      - JWT_EXPIRES_IN=1h
+    depends_on:
+      - mobile_database
+    networks:
+      - healthlink-network
+
+  mobile_database:
     image: postgres:13
-    container_name: mobile-banco
+    container_name: healthlink-database
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123@banco
@@ -12,8 +33,8 @@ services:
       - "5432:5432"
     restart: unless-stopped
     networks:
-      - app-network
+      - healthlink-network
 
 networks:
-  app-network:
+  healthlink-network:
     driver: bridge
