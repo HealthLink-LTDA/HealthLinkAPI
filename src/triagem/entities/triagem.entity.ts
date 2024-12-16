@@ -1,6 +1,6 @@
 import { Funcionario } from "src/funcionario/funcionario.entity";
 import { Paciente } from "src/paciente/paciente.entity";
-import { Column, Entity, IntegerType, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('triagem')
 export class Triagem {
@@ -8,13 +8,13 @@ export class Triagem {
     id: string;
 
     @Column({ nullable: false })
-    neurologico: IntegerType;
+    neurologico: number;
 
     @Column({ nullable: false })
-    cardioVascular: IntegerType;
+    cardioVascular: number;
 
     @Column({ nullable: false })
-    respiratorio: IntegerType;
+    respiratorio: number;
 
     @Column({ nullable: false })
     nebulizacaoResgate: boolean;

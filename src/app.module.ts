@@ -28,6 +28,7 @@ import { TriagemModule } from './triagem/triagem.module';
     PacienteModule,
     FuncionarioModule,
     CargoModule,
+    TriagemModule
   ],
   providers: [],
 })

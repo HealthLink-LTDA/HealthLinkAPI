@@ -1,12 +1,11 @@
 import { UUID } from "crypto";
-import { IntegerType } from "typeorm";
 
 export class CreateTriagemDto {
-    neurologico: IntegerType;
+    neurologico: number;
 
-    cardioVascular: IntegerType;
+    cardioVascular: number;
 
-    respiratorio: IntegerType;
+    respiratorio: number;
 
     nebulizacaoResgate: boolean;
 
