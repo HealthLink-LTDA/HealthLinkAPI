@@ -54,7 +54,7 @@ export class TriagemService {
     });
 
     const savedTriagem =
-      await this.funcionarioRepository.save(novaTriagem);
+      await this.triagemRepository.save(novaTriagem);
 
     this.logger.log(`Triagem with paciente ${triagemDto.paciente}} created successfully`);
     return savedTriagem;
