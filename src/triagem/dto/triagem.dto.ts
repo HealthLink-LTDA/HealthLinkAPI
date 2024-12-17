@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 
-export class CreateTriagemDto {
+export class TriagemDto {
     neurologico: number;
 
     cardioVascular: number;

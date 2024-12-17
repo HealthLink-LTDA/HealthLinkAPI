@@ -1,6 +1,6 @@
 import { Funcionario } from "src/funcionario/funcionario.entity";
 import { Paciente } from "src/paciente/paciente.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('triagem')
 export class Triagem {
@@ -21,6 +21,9 @@ export class Triagem {
 
     @Column({ nullable: false })
     vomitoPersistente: boolean;
+
+    @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
+    data: Date;
     
     @ManyToOne(() => Paciente)
     @JoinColumn({ name: 'pacienteId' })
@@ -29,4 +32,7 @@ export class Triagem {
     @ManyToOne(() => Funcionario)
     @JoinColumn({ name: 'enfermeiraId' })
     enfermeira: Funcionario;
+
+    @Column({ default: false })
+    deletado: boolean;
 }

@@ -12,8 +12,10 @@ export class CreateTriagemTable1734373325472 implements MigrationInterface {
                 "respiratorio" INTEGER NOT NULL,
                 "nebulizacaoResgate" BOOLEAN NOT NULL,
                 "vomitoPersistente" BOOLEAN NOT NULL,
+                "data" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 "pacienteId" uuid,
                 "enfermeiraId" uuid,
+                "deletado" boolean DEFAULT false,
                 CONSTRAINT "FK_pacienteId" FOREIGN KEY ("pacienteId") REFERENCES "paciente"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
                 CONSTRAINT "FK_enfermeiraId" FOREIGN KEY ("enfermeiraId") REFERENCES "funcionario"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
