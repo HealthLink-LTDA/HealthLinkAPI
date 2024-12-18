@@ -6,6 +6,7 @@ import { PacienteModule } from './paciente/paciente.module';
 import { FuncionarioModule } from './funcionario/funcionario.module';
 import { DataSource } from 'typeorm';
 import { CargoModule } from './cargo/cargo.module';
+import { TriagemModule } from './triagem/triagem.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CargoModule } from './cargo/cargo.module';
     PacienteModule,
     FuncionarioModule,
     CargoModule,
+    TriagemModule
   ],
   providers: [],
 })
