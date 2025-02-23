@@ -2,11 +2,11 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { TriagemDto } from './dto/triagem.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Triagem } from './entities/triagem.entity';
-import { IntegerType, Repository } from 'typeorm';
-import { UUID } from 'crypto';
+import { Repository } from 'typeorm';
 import { Paciente } from 'src/paciente/paciente.entity';
 import { Funcionario } from 'src/funcionario/funcionario.entity';
-import { JwtService } from '@nestjs/jwt';
+import { Prioridade } from 'src/prioridade/entities/prioridade.entity';
+import { Recomendacao } from 'src/recomendacao/entities/recomendacao.entity';
 
 @Injectable()
 export class TriagemService {
@@ -15,50 +15,68 @@ export class TriagemService {
   constructor(
     @InjectRepository(Triagem)
     private readonly triagemRepository: Repository<Triagem>,
+
     @InjectRepository(Paciente)
     private readonly pacienteRepository: Repository<Paciente>,
+
     @InjectRepository(Funcionario)
-    private readonly funcionarioRepository: Repository<Funcionario>
+    private readonly funcionarioRepository: Repository<Funcionario>,
+
+    @InjectRepository(Prioridade)
+    private readonly prioridadeRepository: Repository<Prioridade>,
+
+    @InjectRepository(Recomendacao)
+    private readonly recomendacaoRepository: Repository<Recomendacao>,
   ) {}
 
-  async create(
-    triagemDto : TriagemDto
-  ): Promise<Triagem> {
-    this.logger.log(`Creating a new triagem with paciente: ${triagemDto.paciente}`);
+  async create(triagemDto: TriagemDto): Promise<Triagem> {
+    this.logger.log(`Creating a new triagem for paciente: ${triagemDto.paciente}`);
 
-    const pacienteObj = await this.pacienteRepository.findOne({
-      where: { id: triagemDto.paciente },
-    });
-    if (!pacienteObj) {
-      this.logger.warn(`Paciente with ID ${triagemDto.paciente} not found`);
+    const paciente = await this.pacienteRepository.findOne({ where: { id: triagemDto.paciente } });
+    if (!paciente) {
       throw new NotFoundException(`Paciente with ID ${triagemDto.paciente} not found`);
     }
 
-    const enfermeiraObj = await this.funcionarioRepository.findOne({
-      where: { id: triagemDto.enfermeira },
-    });
-    if (!enfermeiraObj) {
-      this.logger.warn(`Enfermeira with ID ${triagemDto.enfermeira} not found`);
+    const enfermeira = await this.funcionarioRepository.findOne({ where: { id: triagemDto.enfermeira } });
+    if (!enfermeira) {
       throw new NotFoundException(`Enfermeira with ID ${triagemDto.enfermeira} not found`);
     }
 
     const novaTriagem = this.triagemRepository.create({
-      neurologico: triagemDto.neurologico,
-      cardioVascular: triagemDto.cardioVascular,
-      respiratorio: triagemDto.respiratorio,
-      nebulizacaoResgate: triagemDto.nebulizacaoResgate,
-      vomitoPersistente: triagemDto.vomitoPersistente,
-      enfermeira: enfermeiraObj,
-      paciente: pacienteObj
+      ...triagemDto,
+      paciente,
+      enfermeira,
     });
 
-    const savedTriagem =
-      await this.triagemRepository.save(novaTriagem);
+    const savedTriagem = await this.triagemRepository.save(novaTriagem);
 
-    this.logger.log(`Triagem with paciente ${triagemDto.paciente}} created successfully`);
+    await this.calcularPontuacaoESalvarNaPrioridade(savedTriagem);
+
     return savedTriagem;
   }
 
+  private async calcularPontuacaoESalvarNaPrioridade(triagem: Triagem) {
+    const pontuacao = triagem.neurologico + triagem.cardioVascular + triagem.respiratorio +
+                      (triagem.nebulizacaoResgate ? 2 : 0) + (triagem.vomitoPersistente ? 2 : 0);
+
+    this.logger.log(`Calculating PEWS score for triagem ${triagem.id}: ${pontuacao}`);
+
+    const recomendacao = await this.recomendacaoRepository
+      .createQueryBuilder('recomendacao')
+      .where(':pontuacao BETWEEN recomendacao.pontuacao_min AND recomendacao.pontuacao_max', { pontuacao })
+      .getOne();
+
+    const prioridade = this.prioridadeRepository.create({
+      triagem,
+      paciente: triagem.paciente,
+      pontuacao,
+      recomendacao,
+    });
+
+    await this.prioridadeRepository.save(prioridade);
+    this.logger.log(`Added triagem ${triagem.id} to prioridade with recommendation ${recomendacao?.id}`);
+  }
+  
   findAll() {
     this.logger.log('Fetching all triagens');
     return this.triagemRepository.find({
@@ -74,46 +92,49 @@ export class TriagemService {
     });
 
     if (!triagem) {
-      this.logger.warn(`Triagem with ID ${id} not found`);
       throw new NotFoundException(`Triagem with ID ${id} not found`);
     }
 
     return triagem;
   }
 
+  async findByPaciente(pacienteId: string) {
+    this.logger.log(`Fetching all triagens for paciente ID: ${pacienteId}`);
+
+    const paciente = await this.pacienteRepository.findOne({ where: { id: pacienteId } });
+    if (!paciente) {
+      throw new NotFoundException(`Paciente with ID ${pacienteId} not found`);
+    }
+
+    return this.triagemRepository.find({
+      where: { paciente },
+      relations: ['enfermeira'],
+    });
+  }
+
   async update(id: string, triagemDto: TriagemDto) {
     this.logger.log(`Updating triagem with ID: ${id}`);
 
-    const pacienteObj = await this.pacienteRepository.findOne({
-      where: { id: triagemDto.paciente },
-    });
-    if (!pacienteObj) {
-      this.logger.warn(`Paciente with ID ${triagemDto.paciente} not found`);
+    const triagem = await this.triagemRepository.findOne({ where: { id } });
+    if (!triagem) {
+      throw new NotFoundException(`Triagem with ID ${id} not found`);
+    }
+
+    const paciente = await this.pacienteRepository.findOne({ where: { id: triagemDto.paciente } });
+    if (!paciente) {
       throw new NotFoundException(`Paciente with ID ${triagemDto.paciente} not found`);
     }
 
-    const enfermeiraObj = await this.funcionarioRepository.findOne({
-      where: { id: triagemDto.enfermeira },
-    });
-    if (!enfermeiraObj) {
-      this.logger.warn(`Enfermeira with ID ${triagemDto.enfermeira} not found`);
+    const enfermeira = await this.funcionarioRepository.findOne({ where: { id: triagemDto.enfermeira } });
+    if (!enfermeira) {
       throw new NotFoundException(`Enfermeira with ID ${triagemDto.enfermeira} not found`);
     }
 
-    const novaTriagem = this.triagemRepository.create({
-      neurologico: triagemDto.neurologico,
-      cardioVascular: triagemDto.cardioVascular,
-      respiratorio: triagemDto.respiratorio,
-      nebulizacaoResgate: triagemDto.nebulizacaoResgate,
-      vomitoPersistente: triagemDto.vomitoPersistente,
-      enfermeira: enfermeiraObj,
-      paciente: pacienteObj
-    });
+    Object.assign(triagem, triagemDto);
+    const savedTriagem = await this.triagemRepository.save(triagem);
 
-    const savedTriagem =
-      await this.triagemRepository.save(novaTriagem);
+    await this.calcularPontuacaoESalvarNaPrioridade(savedTriagem);
 
-    this.logger.log(`Triagem with paciente ${triagemDto.paciente}} updated successfully`);
     return savedTriagem;
   }
 

@@ -24,8 +24,8 @@ export class TriagemController {
   ) {}
 
   @Post()
-  create(@Body() triagemDto: TriagemDto, @Request() req: any) {
-    triagemDto.enfermeira = req.user.userId;
+  create(@Body() triagemDto: TriagemDto) {
+    // triagemDto.enfermeira = req.user.userId;
     return this.triagemService.create(triagemDto);
   }
 
