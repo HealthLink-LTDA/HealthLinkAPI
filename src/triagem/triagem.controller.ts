@@ -39,6 +39,11 @@ export class TriagemController {
     return this.triagemService.findOne(id);
   }
 
+  @Get('/paciente/:id')
+  findByPaciente(@Param('id') pacienteId: string){
+    return this.triagemService.findByPaciente(pacienteId);
+  }
+
   @Put(':id')
   update(
     @Param('id') id: string,
