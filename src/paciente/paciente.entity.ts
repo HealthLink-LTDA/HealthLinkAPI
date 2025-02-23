@@ -19,4 +19,7 @@ export class Paciente {
 
   @Column()
   notas: string;
+
+  @Column({ default: true })
+  ativo: boolean;
 }
