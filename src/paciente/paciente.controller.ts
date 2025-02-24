@@ -96,4 +96,22 @@ export class PacienteController {
       notas,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/activate/:id')
+  @ApiOperation({ summary: 'Activate a Paciente by ID' })
+  @ApiResponse({ status: 200, description: 'Paciente activated successfully' })
+  activate(@Param('id') id: string) {
+    this.logger.log(`Activating paciente with ID: ${id}`);
+    return this.pacienteService.updateActive(id, true);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/disable/:id')
+  @ApiOperation({ summary: 'Disable a Paciente by ID' })
+  @ApiResponse({ status: 200, description: 'Paciente disabled successfully' })
+  disable(@Param('id') id: string) {
+    this.logger.log(`Disabling paciente with ID: ${id}`);
+    return this.pacienteService.updateActive(id, false);
+  }
 }

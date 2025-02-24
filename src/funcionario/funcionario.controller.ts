@@ -22,7 +22,6 @@ import {
 
 @Controller('funcionario')
 @UseGuards(JwtAuthGuard, CargoGuard)
-@Roles('admin')
 @ApiTags('Funcionario')
 @ApiBearerAuth()
 export class FuncionarioController {
@@ -39,6 +38,7 @@ export class FuncionarioController {
   }
 
   @Post()
+  @Roles('admin')
   @ApiOperation({ summary: 'Create a new funcionario' })
   @ApiResponse({ status: 201, description: 'Funcionario created successfully' })
   create(
@@ -69,6 +69,7 @@ export class FuncionarioController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Delete a funcionario by ID' })
   @ApiResponse({ status: 200, description: 'Funcionario deleted successfully' })
   delete(@Param('id') id: string) {
@@ -77,6 +78,7 @@ export class FuncionarioController {
   }
 
   @Put(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Update a funcionario by ID' })
   @ApiResponse({ status: 200, description: 'Funcionario updated successfully' })
   update(

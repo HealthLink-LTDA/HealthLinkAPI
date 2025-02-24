@@ -46,6 +46,10 @@ export class PacienteService {
       this.logger.warn(`Paciente with ID ${id} not found`);
       throw new NotFoundException(`Paciente with ID ${id} not found`);
     }
+    if(!paciente?.ativo){
+      this.logger.warn(`Paciente with ID ${id} is disabled`);
+      throw new NotFoundException(`Paciente with ID ${id} is disabled`);
+    }
 
     return paciente;
   }
@@ -60,6 +64,15 @@ export class PacienteService {
   ): Promise<Paciente> {
     this.logger.log(`Updating paciente with ID: ${id}`);
     const paciente = await this.findOneById(id);
+
+    if (!paciente) {
+      this.logger.warn(`Paciente with ID ${id} not found`);
+      throw new NotFoundException(`Paciente with ID ${id} not found`);
+    }
+    if(!paciente?.ativo){
+      this.logger.warn(`Paciente with ID ${id} is disabled`);
+      throw new NotFoundException(`Paciente with ID ${id} is disabled`);
+    }
 
     paciente.nome = nome;
     paciente.cpf = cpf;
@@ -76,7 +89,32 @@ export class PacienteService {
     this.logger.log(`Deleting paciente with ID: ${id}`);
     const paciente = await this.findOneById(id);
 
+    if (!paciente) {
+      this.logger.warn(`Paciente with ID ${id} not found`);
+      throw new NotFoundException(`Paciente with ID ${id} not found`);
+    }
+    if(!paciente?.ativo){
+      this.logger.warn(`Paciente with ID ${id} is disabled`);
+      throw new NotFoundException(`Paciente with ID ${id} is disabled`);
+    }
+
     await this.pacienteRepository.remove(paciente);
     this.logger.log(`Paciente with ID ${id} deleted successfully`);
   }
+
+  async updateActive(id: string, ativo: boolean): Promise<void> {
+    this.logger.log(`Deleting paciente with ID: ${id}`);
+    const paciente = await this.findOneById(id);
+
+    if (!paciente) {
+      this.logger.warn(`Paciente with ID ${id} not found`);
+      throw new NotFoundException(`Paciente with ID ${id} not found`);
+    }
+
+    paciente.ativo = ativo;
+
+    await this.pacienteRepository.save(paciente);
+    this.logger.log(`Paciente with ID ${id} activated successfully`);
+  }
+
 }
