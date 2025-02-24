@@ -58,4 +58,11 @@ export class TriagemController {
   remove(@Param('id') id: string) {
     return this.triagemService.remove(id);
   }
+
+  @Get('/prioridade/:id')
+  getPrioridadesId(
+    @Param('id') id: string
+  ) {
+    return this.triagemService.findAllPrioridadeByPaciente(id);
+  }
 }

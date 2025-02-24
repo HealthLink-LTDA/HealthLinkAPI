@@ -162,4 +162,23 @@ export class TriagemService {
     await this.triagemRepository.save(triagem);
     this.logger.log(`Triagem with ID ${id} marked as deleted`);
   }
+
+  async findAllPrioridadeByPaciente(pacienteId: string){
+    this.logger.log(`Fetching all prioridades for paciente ID: ${pacienteId}`);
+
+    const paciente = await this.pacienteRepository.findOne({ where: { id: pacienteId } });
+
+    if (!paciente) {
+        this.logger.warn(`Paciente with ID ${pacienteId} not found`);
+        throw new NotFoundException(`Paciente with ID ${pacienteId} not found`);
+    }
+    if(!paciente?.ativo){
+        this.logger.warn(`Paciente with ID ${pacienteId} is disabled`);
+        throw new NotFoundException(`Paciente with ID ${pacienteId} is disabled`);
+    }
+
+    return this.prioridadeRepository.find({
+        where: { paciente }
+    });
+  }
 }
